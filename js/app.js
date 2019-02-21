@@ -3,29 +3,29 @@
  * attendance record if one is not found
  * within localStorage.
  */
-(function() {
-    if (!localStorage.attendance) {
-        console.log('Creating attendance records...');
-
-        function getRandom() {
-            return (Math.random() >= 0.5);
-        }
-
-        var nameColumns = $('tbody .name-col'),
-            attendance = {};
-
-        nameColumns.each(function() {
-            var name = this.innerText;
-            attendance[name] = [];
-
-            for (var i = 0; i <= 11; i++) {
-                attendance[name].push(getRandom());
-            }
-        });
-
-        localStorage.attendance = JSON.stringify(attendance);
-    }
-}());
+// (function() {
+//     if (!localStorage.attendance) {
+//         console.log('Creating attendance records...');
+//
+//         function getRandom() {
+//             return (Math.random() >= 0.5);
+//         }
+//
+//         var nameColumns = $('tbody .name-col'),
+//             attendance = {};
+//
+//         nameColumns.each(function() {
+//             var name = this.innerText;
+//             attendance[name] = [];
+//
+//             for (var i = 0; i <= 11; i++) {
+//                 attendance[name].push(getRandom());
+//             }
+//         });
+//
+//         localStorage.attendance = JSON.stringify(attendance);
+//     }
+// }());
 
 
 /* STUDENT APPLICATION */
@@ -96,10 +96,25 @@ $(function() {
             });
         },
 
+        updateByLocalStorage: function() {
+            //Check boxes, based on attendace records
+            //通过已保存的签到记录更新页面
+            var attendance = JSON.parse(localStorage.attendance)
+            $.each(attendance, function(name, days) {
+                var studentRow = $('tbody .name-col:contains("' + name + '")').parent('tr'),
+                    dayChecks = $(studentRow).children('.attend-col').children('input');
+
+                dayChecks.each(function(i) {
+                    $(this).prop('checked', days[i]);
+                });
+            });
+        },
+
         init: function() {
             view.init()
+            this.updateByLocalStorage()
             this.initCheckBoxListener()
-            //首次生成页面显示所有学生缺席数
+            //首次生成页面计算所有学生缺席数
             this.countMissing()
         }
     }

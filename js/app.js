@@ -6,6 +6,7 @@
 (function() {
     if (!localStorage.attendance) {
         console.log('Creating attendance records...');
+
         function getRandom() {
             return (Math.random() >= 0.5);
         }
@@ -29,6 +30,54 @@
 
 /* STUDENT APPLICATION */
 $(function() {
+    // 模型层model
+    var model = {
+        attendanceCount: 12,
+        studentArray: ["Slappy the Frog", "Lilly the Lizard", "Paulrus the Walrus", "Gregory the Goat", "Adam the Anaconda"],
+        missed: 0
+    }
+
+    //章鱼连接层
+    var octopus={
+        //取得签到场数
+        getAttendanceCount:function() {
+            return model.attendanceCount
+        },
+        //取得学生名
+        getStudentName: function() {
+            return model.studentArray
+        },
+
+        init: function() {
+            view.init()
+        }
+    }
+
+    //视图层
+    var view={
+        init: function() {
+            //初始化数据
+            //取得表头
+            this.thead=$('thead').children(":first");
+            this.render()
+        },
+
+        render: function() {
+            // 生成界面
+            //生成表头
+            let _head_html='<th class="name-col">Student Name</th>'
+            for(let i=1;i<=octopus.getAttendanceCount();i++){
+                _head_html+='<th>'+i+'</th>'
+            }
+            _head_html+='<th class="missed-col">Days Missed-col</th>'
+            this.thead.append(_head_html)
+        }
+    }
+
+    //调用章鱼连接层启动界面
+    octopus.init()
+
+
     var attendance = JSON.parse(localStorage.attendance),
         $allMissed = $('tbody .missed-col'),
         $allCheckboxes = $('tbody input');
